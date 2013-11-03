@@ -26,7 +26,7 @@ var scar =
         },
         "sprite":
         {
-                "image": "game/data/asset/scar.png",
+                "image": "data/asset/scar.png",
                 "width": 64,
                 "height": 64,
                 "tiles": 

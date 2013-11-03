@@ -8,7 +8,7 @@ var arena  =
         },
         "sprite": 
         {
-                "image": "game/data/asset/map.png",
+                "image": "data/asset/map.png",
                 "width": 1280,
                 "height": 1920,
         },

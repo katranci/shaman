@@ -14,7 +14,7 @@ var pixie  =
         {
                 "sprite":
                 {
-                        "image": "game/data/asset/pixie.png",                  
+                        "image": "data/asset/pixie.png",                  
                         "width": 128,
                         "height": 128
                 },
@@ -47,7 +47,7 @@ var pixie  =
         {
                 "sprite":
                 {
-                        "image": "game/data/asset/twirl.png",                  
+                        "image": "data/asset/twirl.png",                  
                         "width": 512,
                         "height": 512,
                         "tiles": 
@@ -73,7 +73,7 @@ var pixie  =
                         "speed": 800,
                         "sprite":
                         {
-                                "image": "game/data/asset/beam.png",                  
+                                "image": "data/asset/beam.png",                  
                                 "width": 128,
                                 "height": 128,
                                 "tiles": 

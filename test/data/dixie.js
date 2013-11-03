@@ -14,7 +14,7 @@ var dixie  =
         {
                 "sprite":
                 {
-                        "image": "game/data/asset/dixie.png",                  
+                        "image": "data/asset/dixie.png",                  
                         "width": 128,
                         "height": 128
                 },
@@ -49,7 +49,7 @@ var dixie  =
         {
                 "sprite":
                 {
-                        "image": "game/data/asset/rifle.png",                  
+                        "image": "data/asset/rifle.png",                  
                         "width": 512,
                         "height": 512,
                         "tiles": 
@@ -75,7 +75,7 @@ var dixie  =
                         "speed": 1500,
                         "sprite":
                         {
-                                "image": "game/data/asset/bullet.png",                  
+                                "image": "data/asset/bullet.png",                  
                                 "width": 128,
                                 "height": 128,
                                 "tiles": 

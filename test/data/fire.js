@@ -26,7 +26,7 @@ var fire =
         },
         "sprite":
         {
-                "image": "game/data/asset/flame.png",
+                "image": "data/asset/flame.png",
                 "width": 32,
                 "height": 32,
                 "tiles": 

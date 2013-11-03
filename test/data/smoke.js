@@ -26,7 +26,7 @@ var smoke =
         },
         "sprite":
         {
-                "image": "game/data/asset/smoke.png",
+                "image": "data/asset/smoke.png",
                 "width": 128,
                 "height": 128,
                 "tiles": 
