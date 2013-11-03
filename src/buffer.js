@@ -34,7 +34,7 @@ Buffer.prototype.get_buffer_object = function()
 Buffer.prototype.get_size = function()
 {
         return this.size;
-};
+}
 
 /*  update buffer data */
 Buffer.prototype.update = function(data)

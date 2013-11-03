@@ -10,6 +10,14 @@ function Quad(ax, ay, bx, by, cx, cy, dx, dy)
         this.corners = [new Vector2(ax, ay), new Vector2(bx, by), new Vector2(cx, cy), new Vector2(dx, dy)];
 };
 
+Quad.prototype.get_copy = function()
+{
+        return new Quad(this.corners[0].get(0), this.corners[0].get(1),
+                        this.corners[1].get(0), this.corners[1].get(1),
+                        this.corners[2].get(0), this.corners[2].get(1),
+                        this.corners[3].get(0), this.corners[3].get(1));
+}
+
 Quad.prototype.get_corner = function(i)
 {
         return new Vector2(this.corners[i].get(0), this.corners[i].get(1));
@@ -17,10 +25,10 @@ Quad.prototype.get_corner = function(i)
 
 Quad.prototype.set = function(ax, ay, bx, by, cx, cy, dx, dy)
 {
-        this.corners[0].set_value(ax, ay);
-        this.corners[1].set_value(bx, by);
-        this.corners[2].set_value(cx, cy); 
-        this.corners[3].set_value(dx, dy); 
+        this.corners[0].set_values(ax, ay);
+        this.corners[1].set_values(bx, by);
+        this.corners[2].set_values(cx, cy); 
+        this.corners[3].set_values(dx, dy); 
 };
 
 Quad.prototype.translate = function(x, y) 
@@ -117,7 +125,7 @@ Quad.prototype.is_quad_inside = function(quad)
 
 Quad.prototype.is_line_colliding = function(line) 
 {
-        var l = Line();
+        var l = new Line();
         var collision;
 
         l.set(this.corners[0].get(0), this.corners[0].get(1), this.corners[1].get(0), this.corners[1].get(1));
@@ -160,4 +168,17 @@ Quad.prototype.unit = function()
         this.corners[1].set_values(0.5, -0.5);
         this.corners[2].set_values(0.5, 0.5); 
         this.corners[3].set_values(-0.5, 0.5);
+};
+
+Quad.prototype.direction = function()
+{
+        var front = new Vector2((this.corners[0].get(0) + this.corners[1].get(0)) / 2.0, (this.corners[0].get(1) + this.corners[1].get(1)) / 2.0);
+        front.sub(front, this.centre());
+        front.normalize();
+        return front;
+};
+
+Quad.prototype.angle = function()
+{
+        return this.direction().angle(new Vector2(0.0, -1.0));
 };

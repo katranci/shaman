@@ -16,17 +16,13 @@ function Painter(renderer)
         this.renderer = renderer;
         this.index_buffer = this.renderer.create_index_buffer([]);
         this.vertex_buffer = this.renderer.create_vertex_buffer([]);
+        this.quad_index_data = [0, 1, 2, 0, 2, 3];
+        this.quad_vertex_data = [-0.5, -0.5, 0.0, 0.0,
+                                  0.5, -0.5, 1.0, 0.0, 
+                                  0.5,  0.5, 1.0, 1.0,
+                                 -0.5,  0.5, 0.0, 1.0];
 
-        var vs_source = Utility.get_shader_source("quad_vertex_shader_source");
-        var fs_source = Utility.get_shader_source("quad_frag_shader_source");
-        var shader = renderer.create_shader(vs_source, fs_source);
-        var quad_index_data = [0, 1, 2, 0, 2, 3];
-        var quad_vertex_data = [-0.5, -0.5, 0.0, 0.0,
-                                 0.5, -0.5, 1.0, 0.0, 
-                                 0.5,  0.5, 1.0, 1.0,
-                                -0.5,  0.5, 0.0, 1.0];
-        var ib = renderer.create_index_buffer(quad_index_data);
-        var vb = renderer.create_vertex_buffer(quad_vertex_data);
+        var shader = renderer.create_shader(sprite_vs_source, sprite_fs_source);
 
         this.projection.make_ortho(0.0, renderer.get_viewport_width(), renderer.get_viewport_height(), 0.0, -1.0, 1.0);
         this.projection.transpose();
@@ -36,12 +32,10 @@ function Painter(renderer)
         this.quad.add_uniform("colour", Uniform.VECTOR4, this.colour);
         this.quad.add_vertex_attribute("position", 2, false);
         this.quad.add_vertex_attribute("texcoord", 2, false);
-        this.quad.set_buffers(ib, vb);
+        this.quad.set_buffers(this.index_buffer, this.vertex_buffer);
         this.quad.set_shader(shader);
 
-        vs_source = Utility.get_shader_source("particle_vertex_shader_source");
-        fs_source = Utility.get_shader_source("particle_frag_shader_source");
-        shader = renderer.create_shader(vs_source, fs_source);
+        shader = renderer.create_shader(particle_vs_source, particle_fs_source);
 
         this.particle.add_uniform("projection", Uniform.MATRIX4, this.projection);
         this.particle.add_uniform("modelview", Uniform.MATRIX4, this.modelview);
@@ -53,9 +47,7 @@ function Painter(renderer)
         this.particle.set_buffers(this.index_buffer, this.vertex_buffer);
         this.particle.set_shader(shader);
 
-        vs_source = Utility.get_shader_source("shape_vertex_shader_source");
-        fs_source = Utility.get_shader_source("shape_frag_shader_source");
-        shader = renderer.create_shader(vs_source, fs_source);
+        shader = renderer.create_shader(shape_vs_source, shape_fs_source);
 
         this.shape.add_uniform("projection", Uniform.MATRIX4, this.projection);
         this.shape.add_uniform("modelview", Uniform.MATRIX4, this.modelview);
@@ -63,26 +55,42 @@ function Painter(renderer)
         this.shape.add_vertex_attribute("position", 2, false);
         this.shape.set_buffers(this.index_buffer, this.vertex_buffer);
         this.shape.set_shader(shader);
-};
 
-Painter.prototype.draw_image = function(transform, texture)
-{
+        var transform = new Transform();
+        transform.set_scale(0.5, 0.5);
+        //transform.set_translation(-450, -150);
         transform.calculate_matrix(this.modelview);
-        this.renderer.bind_texture(0, texture);
-        this.colour.set_values(1.0, 1.0, 1.0, transform.get_alpha());
-
-        this.renderer.draw_renderable(this.quad, Renderer.SOLID);
 };
 
-Painter.prototype.draw_particles = function(emitter, texture)
+Painter.prototype.draw_particles = function(emitter)
 {
+        var texture = this.renderer.get_texture(emitter.get_sprite().get_image_path());
         this.vertex_buffer.update(emitter.get_vertex_data());
         this.index_buffer.update(emitter.get_index_data());
-        this.modelview.identity();
         this.colour.set_values(1.0, 1.0, 1.0, 1.0);
         this.renderer.bind_texture(0, texture);
         this.renderer.draw_renderable(this.particle, Renderer.SOLID);
-}
+};
+
+Painter.prototype.draw_sprite = function(quad, sprite)
+{
+        var tex_coords = sprite.get_tile_coordinate();
+        var current_point;
+
+        this.renderer.bind_texture(0, this.renderer.get_texture(sprite.get_image_path()));
+        this.colour.set_values(1.0, 1.0, 1.0, 1.0);
+        for (var i = 0; i < 4; i++)
+        {
+                current_point = quad.get_corner(i);
+                this.quad_vertex_data[i * 4] = current_point.get(0);
+                this.quad_vertex_data[i * 4 + 1] = current_point.get(1);
+                this.quad_vertex_data[i * 4 + 2] = tex_coords[i * 2];
+                this.quad_vertex_data[i * 4 + 3] = tex_coords[i * 2 + 1];
+        }
+        this.vertex_buffer.update(this.quad_vertex_data);
+        this.index_buffer.update(this.quad_index_data);
+        this.renderer.draw_renderable(this.quad, Renderer.SOLID);
+};
 
 Painter.prototype.draw_polygon = function(polygon)
 {
@@ -93,39 +101,40 @@ Painter.prototype.draw_polygon = function(polygon)
 
         for (var i = 0; i < count; i++)
         {
-            current_point = polygon.get_point(i);
-            vertices.push(current_point.get(0));
-            vertices.push(current_point.get(1));
-            indices.push(i);
+                current_point = polygon.get_point(i);
+                vertices.push(current_point.get(0));
+                vertices.push(current_point.get(1));
+                indices.push(i);
         }
 
         this.vertex_buffer.update(vertices);
         this.index_buffer.update(indices);
+        this.renderer.draw_renderable(this.shape, Renderer.WIREFRAME);
+};
 
-        this.modelview.identity();
-        this.colour.set_values(1.0, 0.5, 0.0, 1.0);
-
+Painter.prototype.draw_particles2 = function(emitter)
+{
+        var texture = this.renderer.get_texture(emitter.get_sprite().get_image_path());
+        this.vertex_buffer.update(emitter.get_vertex_data());
+        this.index_buffer.update(emitter.get_index_data());
+        this.colour.set_values(1.0, 1.0, 1.0, 1.0);
+        this.renderer.bind_texture(0, texture);
         this.renderer.draw_renderable(this.shape, Renderer.WIREFRAME);
 };
 
 Painter.prototype.draw_quad = function(quad)
 {
         var vertices = [];
-        var indices = [0, 1, 2, 3];
+        var indices = [];
         var current_point;
-
         for (var i = 0; i < 4; i++)
         {
-            current_point = quad.get_corner(i);
-            vertices.push(current_point.get(0));
-            vertices.push(current_point.get(1));
+                current_point = quad.get_corner(i);
+                vertices.push(current_point.get(0));
+                vertices.push(current_point.get(1));
+                indices.push(i);
         }
-
         this.vertex_buffer.update(vertices);
         this.index_buffer.update(indices);
-
-        this.modelview.identity();
-        this.colour.set_values(1.0, 0.5, 0.0, 1.0);
-
         this.renderer.draw_renderable(this.shape, Renderer.WIREFRAME);
 };

@@ -7,7 +7,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function Renderer(viewport)
 {
-        this.context = viewport.getContext("webgl", {alpha:false});
+        this.context = viewport.getContext("webgl", {alpha:false}) || viewport.getContext("experimental-webgl", {alpha:false});
         this.viewport = viewport;
 
         /* used to avoid blind binding */
@@ -29,9 +29,9 @@ function Renderer(viewport)
 Renderer.SOLID = 0;
 Renderer.WIREFRAME = 1;
 
-Renderer.prototype.clear_buffers = function()
+Renderer.prototype.clear_screen = function()
  {
-         this.context.clear(this.context.COLOR_BUFFER_BIT);
+         this.context.clear(this.context.COLOR_BUFFER_BIT | this.context.DEPTH_BUFFER_BIT);
  };
 
  /*  returns webgl context */

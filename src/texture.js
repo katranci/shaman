@@ -7,7 +7,8 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 function Texture(renderer) 
 {
-        this.context = renderer.get_context();
+        this.renderer = renderer;
+        this.context = this.renderer.get_context();
         this.texture = this.context.createTexture();
 };
 
@@ -23,7 +24,7 @@ Texture.prototype.update = function(image_path)
         image.texture = this;
         
         image.onload = function() {
-            renderer.bind_texture(0, image.texture);
+            image.texture.renderer.bind_texture(0, image.texture);
             //image.texture.context.pixelStorei(image.texture.context.UNPACK_FLIP_Y_WEBGL, true);
             image.texture.context.texImage2D(image.texture.context.TEXTURE_2D, 0, image.texture.context.RGBA, image.texture.context.RGBA, image.texture.context.UNSIGNED_BYTE, image);
             image.texture.context.texParameteri(image.texture.context.TEXTURE_2D, image.texture.context.TEXTURE_MIN_FILTER, image.texture.context.LINEAR_MIPMAP_LINEAR);

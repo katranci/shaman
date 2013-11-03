@@ -18,12 +18,6 @@ Utility.buffer32 = new ArrayBuffer(4);
 Utility.ui32reg = new Uint32Array(Utility.buffer32);
 Utility.f32reg = new Float32Array(Utility.buffer32);
 
-/*  generates a random floating number within [min, max] */
-Utility.rand_range = function(min, max)
-{
-        return (Math.fequals(min, max, MathLib.epsilon))?(min):((Math.random() * (max - min)) + min);
-};
-
 /*  creates an extensible object from another object */
 Utility.extend = function (object) 
 {
@@ -60,7 +54,13 @@ Utility.rand_range = function(min, max)
 
 Utility.rand_int_range = function(min, max) 
 {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+Utility.flip_coin = function(heads, tails) 
+{
+        var r = Utility.rand_int_range(0, 1);
+        return ((r === 0)?(heads):(tails));
 };
 
 Utility.get_time = (function() {

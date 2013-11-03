@@ -1,34 +1,36 @@
 function Emitter(capacity)
 {
+        this.capacity = capacity;
         this.vertex_data = new Array(capacity * 40);
         this.index_data = [];
         this.particles = [];
-        this.fuel = 0;
-        this.frequency = 0;
-        this.density = 0;
-        this.life_min = 0;  
-        this.life_max = 0;
-        this.speed_min = 0;
-        this.speed_max = 0;
-        this.angle_min = 0;
-        this.angle_max = 0;
-        this.initial_scale_min = 0;
-        this.initial_scale_max = 0;
-        this.final_scale_min = 0;
-        this.final_scale_max = 0;
-        this.initial_alpha_min = 0;  
-        this.initial_alpha_max = 0;  
-        this.final_alpha_min = 0;   
-        this.final_alpha_max = 0;  
-        this.spawn_area = new Circle(0.0, 0.0, 0.5);
-        this.sprite;
         this.spawn_countdown = 0;
-        this.capacity = capacity;
+        
+        this.fuel;
+        this.frequency;
+        this.density;
+        this.life_min;  
+        this.life_max;
+        this.speed_min;
+        this.speed_max;
+        this.angle_min;
+        this.angle_max;
+        this.initial_scale_min;
+        this.initial_scale_max;
+        this.final_scale_min;
+        this.final_scale_max;
+        this.initial_alpha_min;  
+        this.initial_alpha_max;  
+        this.final_alpha_min;   
+        this.final_alpha_max;  
+        this.spawn_area;
+        this.sprite;
 
         for (var i = 0; i < capacity; i++)
         {
                 this.particles.push(new Particle());
         }
+
 };
 
 Emitter.prototype.advance = function(dt)
@@ -69,7 +71,7 @@ Emitter.prototype.advance = function(dt)
                  }
                  if (this.particles[i].get_life_left() > 0)
                  {
-                         tex_coords = this.sprite.calculate_tile_coordinate(this.particles[i].get_tile_index());
+                         tex_coords = this.sprite.get_tile_coordinate(this.particles[i].get_tile_index());
                          var pos, offset, scale;
                          this.particles[i].advance(dt);
                          pos = this.particles[i].get_position();
@@ -91,9 +93,10 @@ Emitter.prototype.advance = function(dt)
          }
  };
 
- Emitter.from_json = function(data)
+ Emitter.load = function(data)
  {
         var new_emitter = new Emitter(data.capacity);
+
         new_emitter.fuel = data.fuel;
         new_emitter.frequency = data.frequency;
         new_emitter.density = data.density;
@@ -111,8 +114,8 @@ Emitter.prototype.advance = function(dt)
         new_emitter.initial_alpha_max = data.initial_alpha_max;  
         new_emitter.final_alpha_min = data.final_alpha_min;   
         new_emitter.final_alpha_max = data.final_alpha_max;  
-        new_emitter.spawn_area.set(data.spawn_area.x, data.spawn_area.y, data.spawn_area.radius);
-        new_emitter.sprite = new Sprite(data.sprite.width, data.sprite.height);
+        new_emitter.spawn_area = new Circle(data.spawn_area.x, data.spawn_area.y, data.spawn_area.radius);
+        new_emitter.sprite = new Sprite(data.sprite.width, data.sprite.height, data.sprite.image);
         for (var i = 0; i < data.sprite.tiles.length; i++)
         {
                 new_emitter.sprite.add_tile(data.sprite.tiles[i].x,

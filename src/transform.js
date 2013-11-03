@@ -44,9 +44,9 @@ Transform.prototype.translate = function(x, y)
         this.translation.set_values(x + this.translation.get(0), y + this.translation.get(1), 0.0);
 };
 
-Transform.prototype.scale = function(x, y)
+Transform.prototype.scale = function(sx, sy)
 {
-        this.scale.set_values(x * this.scale.get(0), y * this.scale.get(1), 1.0);
+        this.scale.set_values(sx * this.scale.get(0), sy * this.scale.get(1), 1.0);
 };
 
 Transform.prototype.rotate = function(angle)
@@ -59,9 +59,9 @@ Transform.prototype.set_translation = function(x, y)
         this.translation.set_values(x, y, 0.0);
 };
 
-Transform.prototype.set_scale = function(x, y)
+Transform.prototype.set_scale = function(sx, sy)
 {
-        this.scale.set_values(x, y, 1.0);
+        this.scale.set_values(sx, sy, 1.0);
 };
 
 Transform.prototype.set_rotation = function(angle)

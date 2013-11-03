@@ -11,6 +11,16 @@ function Polygon()
         this.lines = [];
 };
 
+Polygon.prototype.get_copy = function()
+{
+        var polygon = new Polygon();
+        for (var i = 0; i < this.points.length; i++)
+        {
+                polygon.insert_point(this.points[i].get(0), this.points[i].get(1));
+        }
+        return polygon;
+};
+
 Polygon.prototype.rebuild = function()
 {
         var last = this.points.length - 1;
@@ -49,7 +59,7 @@ Polygon.prototype.insert_array = function(arr)
         var len = arr.length / 2.0;
         for (var i = 0; i < len; i++)
         {
-                this.points.push(new Vector2(arr[i*2], arr[i*2+1]))
+                this.points.push(new Vector2(arr[i*2], arr[i*2+1]));
         }
         this.rebuild();
 };
@@ -106,7 +116,7 @@ Polygon.prototype.rotate_about = function(angle, x, y)
 
 Polygon.prototype.is_line_colliding = function(line) 
 {
-        for (var i = 0; i < this.points.length; i++)
+        for (var i = 0; i < this.lines.length; i++)
         {
                 if (line.is_line_colliding(this.lines[i]))
                 {
@@ -118,7 +128,7 @@ Polygon.prototype.is_line_colliding = function(line)
 
 Polygon.prototype.is_circle_colliding = function(circle) 
 {
-        for (var i = 0; i < this.points.length; i++)
+        for (var i = 0; i < this.lines.length; i++)
         {
                 if (circle.is_line_colliding(this.lines[i]))
                 {
@@ -130,9 +140,21 @@ Polygon.prototype.is_circle_colliding = function(circle)
 
 Polygon.prototype.is_quad_colliding = function(quad) 
 {
-        for (var i = 0; i < this.points.length; i++)
+        for (var i = 0; i < this.lines.length; i++)
         {
                 if (quad.is_line_colliding(this.lines[i]))
+                {
+                        return true;
+                }
+        }
+        return false;
+};
+
+Polygon.prototype.is_polygon_colliding = function(polygon) 
+{
+        for (var i = 0; i < this.lines.length; i++)
+        {
+                if (polygon.is_line_colliding(this.lines[i]))
                 {
                         return true;
                 }
@@ -166,6 +188,17 @@ Polygon.prototype.get_aabb = function()
         }
         return new Quad(ax, ay, bx, by, cx, cy, dx, dy);
 };
+
+Polygon.prototype.get_array = function()
+{
+        var points = [];
+        for (var i = 0; i < this.points.length; i++)
+        {
+            points.push(this.points[i].get(0));
+            points.push(this.points[i].get(1));
+        }
+        return points;
+}
 
 Polygon.prototype.reset = function()
 {
